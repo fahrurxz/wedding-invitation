@@ -1,0 +1,27 @@
+# WordPress files yang tidak perlu untuk GitHub Pages
+wp-admin/
+wp-includes/
+motion-02/
+.htaccess
+wp-config.php
+*.log
+
+# Cache dan temporary files
+*.cache
+.DS_Store
+Thumbs.db
+
+# Node modules (jika ada)
+node_modules/
+package-lock.json
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Backup files
+*.bak
+*.tmp
