@@ -1280,20 +1280,99 @@ var CUI_WP = {"ajaxurl":"https://cintakami.com/wp-admin/admin-ajax.php","cuiNonc
 //# sourceURL=cui_js_script-js-extra
 </script>
 <script>
-// CORS Proxy Solution
+// Custom Wishes Loader - Load from local static file
 (function() {
-    var originalAjax = jQuery.ajax;
+    // Function to load wishes/comments from local file
+    function loadWishes() {
+        fetch('wp-admin/admin-ajax.php')
+            .then(response => response.text())
+            .then(html => {
+                // Find the comment container
+                var container = document.getElementById('cui-container-comment-281142');
+                
+                if (container && html) {
+                    container.innerHTML = html;
+                    console.log('Wishes loaded successfully from static file!');
+                    
+                    // Show the comments section
+                    var wrapComment = document.getElementById('cui-wrap-commnent-281142');
+                    if (wrapComment) {
+                        wrapComment.style.display = 'block';
+                    }
+                    
+                    // Update comment count
+                    updateCommentCount();
+                }
+            })
+            .catch(error => {
+                console.log('Error loading wishes:', error);
+                // Fallback - use jQuery
+                loadWishesWithJQuery();
+            });
+    }
     
-    jQuery.ajax = function(settings) {
-        // Intercept requests to cintakami.com
-        if (settings.url && settings.url.indexOf('cintakami.com') !== -1) {
-            // Use CORS proxy
-            settings.url = 'https://corsproxy.io/?' + encodeURIComponent(settings.url);
-            console.log('Using CORS proxy for:', settings.url);
-        }
+    // Alternative loader with jQuery
+    function loadWishesWithJQuery() {
+        jQuery.ajax({
+            url: 'wp-admin/admin-ajax.php',
+            type: 'GET',
+            dataType: 'html',
+            success: function(response) {
+                var container = document.getElementById('cui-container-comment-281142');
+                if (container) {
+                    container.innerHTML = response;
+                    console.log('Wishes loaded via jQuery!');
+                    
+                    var wrapComment = document.getElementById('cui-wrap-commnent-281142');
+                    if (wrapComment) {
+                        wrapComment.style.display = 'block';
+                    }
+                    
+                    updateCommentCount();
+                }
+            },
+            error: function(err) {
+                console.log('Failed to load wishes:', err);
+            }
+        });
+    }
+    
+    // Update comment count based on loaded items
+    function updateCommentCount() {
+        var items = document.querySelectorAll('#cui-container-comment-281142 .cui-item-comment');
+        var count = items.length;
         
-        return originalAjax.apply(this, arguments);
-    };
+        // Update the link text
+        var link = document.getElementById('cui-link-281142');
+        if (link && count > 0) {
+            link.innerHTML = '<span>' + count + '</span> Comments';
+        }
+    }
+    
+    // Auto load when clicking the comment link
+    jQuery(document).ready(function($) {
+        $('#cui-link-281142').on('click', function(e) {
+            e.preventDefault();
+            var container = $('#cui-container-comment-281142');
+            
+            // Load wishes if not already loaded
+            if (container.html().trim() === '') {
+                loadWishes();
+            }
+            
+            // Toggle visibility
+            $('#cui-wrap-commnent-281142').slideToggle(200);
+            
+            return false;
+        });
+        
+        // Auto load if set to auto-load
+        if ($('#cui-link-281142').hasClass('auto-load-true')) {
+            setTimeout(function() {
+                loadWishes();
+            }, 500);
+        }
+    });
 })();
 </script>
 <script src="wp-content/plugins/weddingpress/addons/comment-kit2//js/cui_script.js?ver=1.0.0" id="cui_js_script-js"></script>
