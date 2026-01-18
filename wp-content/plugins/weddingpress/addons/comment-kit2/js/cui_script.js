@@ -284,9 +284,6 @@ jQuery(document).ready(function ($) {
         type: "POST",
         dataType: "html",// tipo de información que se espera de respuesta
         url: CUI.ajaxurl,
-        xhrFields: {
-          withCredentials: true
-        },
         data: {
           action: 'get_comments',
           post_id: post_id,
@@ -304,7 +301,7 @@ jQuery(document).ready(function ($) {
           xhr.setRequestHeader('sec-ch-ua-platform', '"Windows"');
           xhr.setRequestHeader('sec-fetch-dest', 'empty');
           xhr.setRequestHeader('sec-fetch-mode', 'cors');
-          xhr.setRequestHeader('sec-fetch-site', 'same-origin');
+          xhr.setRequestHeader('sec-fetch-site', 'cross-site');
           xhr.setRequestHeader('x-requested-with', 'XMLHttpRequest');
         },
         success: function (data) {
