@@ -284,6 +284,9 @@ jQuery(document).ready(function ($) {
         type: "POST",
         dataType: "html",// tipo de información que se espera de respuesta
         url: CUI.ajaxurl,
+        xhrFields: {
+          withCredentials: true
+        },
         data: {
           action: 'get_comments',
           post_id: post_id,
@@ -291,8 +294,18 @@ jQuery(document).ready(function ($) {
           order: order_comments,
           nonce: CUI.nonce
         },
-        beforeSend: function () {
+        beforeSend: function (xhr) {
           status.addClass('cui-loading').html('<span class="cuio-loading"></span>').show();
+          xhr.setRequestHeader('accept', 'text/html, */*; q=0.01');
+          xhr.setRequestHeader('accept-language', 'en-US,en;q=0.9,id;q=0.8');
+          xhr.setRequestHeader('priority', 'u=1, i');
+          xhr.setRequestHeader('sec-ch-ua', '"Google Chrome";v="143", "Chromium";v="143", "Not A(Brand";v="24"');
+          xhr.setRequestHeader('sec-ch-ua-mobile', '?0');
+          xhr.setRequestHeader('sec-ch-ua-platform', '"Windows"');
+          xhr.setRequestHeader('sec-fetch-dest', 'empty');
+          xhr.setRequestHeader('sec-fetch-mode', 'cors');
+          xhr.setRequestHeader('sec-fetch-site', 'same-origin');
+          xhr.setRequestHeader('x-requested-with', 'XMLHttpRequest');
         },
         success: function (data) {
           status.removeClass('cui-loading').html('').hide();
